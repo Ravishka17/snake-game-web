@@ -159,19 +159,22 @@ function updateTailGraphics() {
             y: snake[snake.length - 2].y - snake[snake.length - 1].y
         };
         
-        // The tail graphics need to be reversed - if the segment before tail is to the right,
-        // the tail should point left (opposite direction)
-        if (tailDirection.x === -1 && tailDirection.y === 0) {
-            // Segment before tail is to the left, so tail should point right
+        // The tail should point in the direction AWAY from the previous segment
+        // If previous segment is to the right of tail (x=1), tail should point right
+        // If previous segment is to the left of tail (x=-1), tail should point left
+        // If previous segment is below tail (y=1), tail should point down
+        // If previous segment is above tail (y=-1), tail should point up
+        if (tailDirection.x === 1 && tailDirection.y === 0) {
+            // Previous segment is to the right, tail should point right
             currentTailGraphic = snakeGraphics.tail_right;
-        } else if (tailDirection.x === 1 && tailDirection.y === 0) {
-            // Segment before tail is to the right, so tail should point left
+        } else if (tailDirection.x === -1 && tailDirection.y === 0) {
+            // Previous segment is to the left, tail should point left
             currentTailGraphic = snakeGraphics.tail_left;
-        } else if (tailDirection.x === 0 && tailDirection.y === -1) {
-            // Segment before tail is above, so tail should point down
-            currentTailGraphic = snakeGraphics.tail_down;
         } else if (tailDirection.x === 0 && tailDirection.y === 1) {
-            // Segment before tail is below, so tail should point up
+            // Previous segment is below, tail should point down
+            currentTailGraphic = snakeGraphics.tail_down;
+        } else if (tailDirection.x === 0 && tailDirection.y === -1) {
+            // Previous segment is above, tail should point up
             currentTailGraphic = snakeGraphics.tail_up;
         }
     }
