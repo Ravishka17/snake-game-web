@@ -159,23 +159,24 @@ function updateTailGraphics() {
             y: snake[snake.length - 2].y - snake[snake.length - 1].y
         };
         
-        // The tail should point in the direction AWAY from the previous segment
-        // If previous segment is to the right of tail (x=1), tail should point right
-        // If previous segment is to the left of tail (x=-1), tail should point left
-        // If previous segment is below tail (y=1), tail should point down
-        // If previous segment is above tail (y=-1), tail should point up
+        // Match the original Python logic exactly:
+        // tail_relation = self.body[-2] - self.body[-1]
+        // If tail_relation == Vector2(1,0): self.tail = self.tail_left
+        // If tail_relation == Vector2(-1,0): self.tail = self.tail_right
+        // If tail_relation == Vector2(0,1): self.tail = self.tail_up
+        // If tail_relation == Vector2(0,-1): self.tail = self.tail_down
         if (tailDirection.x === 1 && tailDirection.y === 0) {
-            // Previous segment is to the right, tail should point right
-            currentTailGraphic = snakeGraphics.tail_right;
-        } else if (tailDirection.x === -1 && tailDirection.y === 0) {
-            // Previous segment is to the left, tail should point left
+            // Previous segment is to the right (Vector2(1,0)), use tail_left
             currentTailGraphic = snakeGraphics.tail_left;
+        } else if (tailDirection.x === -1 && tailDirection.y === 0) {
+            // Previous segment is to the left (Vector2(-1,0)), use tail_right
+            currentTailGraphic = snakeGraphics.tail_right;
         } else if (tailDirection.x === 0 && tailDirection.y === 1) {
-            // Previous segment is below, tail should point down
-            currentTailGraphic = snakeGraphics.tail_down;
-        } else if (tailDirection.x === 0 && tailDirection.y === -1) {
-            // Previous segment is above, tail should point up
+            // Previous segment is below (Vector2(0,1)), use tail_up
             currentTailGraphic = snakeGraphics.tail_up;
+        } else if (tailDirection.x === 0 && tailDirection.y === -1) {
+            // Previous segment is above (Vector2(0,-1)), use tail_down
+            currentTailGraphic = snakeGraphics.tail_down;
         }
     }
 }
