@@ -159,24 +159,20 @@ function updateTailGraphics() {
             y: snake[snake.length - 2].y - snake[snake.length - 1].y
         };
         
-        // Match the original Python logic exactly:
-        // tail_relation = self.body[-2] - self.body[-1]
-        // If tail_relation == Vector2(1,0): self.tail = self.tail_left
-        // If tail_relation == Vector2(-1,0): self.tail = self.tail_right
-        // If tail_relation == Vector2(0,1): self.tail = self.tail_up
-        // If tail_relation == Vector2(0,-1): self.tail = self.tail_down
+        // Reversed logic to fix upside-down tail images
+        // The tail should point in the direction it's coming FROM (opposite of the connection)
         if (tailDirection.x === 1 && tailDirection.y === 0) {
-            // Previous segment is to the right (Vector2(1,0)), use tail_left
-            currentTailGraphic = snakeGraphics.tail_left;
-        } else if (tailDirection.x === -1 && tailDirection.y === 0) {
-            // Previous segment is to the left (Vector2(-1,0)), use tail_right
+            // Previous segment is to the right, tail points right
             currentTailGraphic = snakeGraphics.tail_right;
+        } else if (tailDirection.x === -1 && tailDirection.y === 0) {
+            // Previous segment is to the left, tail points left
+            currentTailGraphic = snakeGraphics.tail_left;
         } else if (tailDirection.x === 0 && tailDirection.y === 1) {
-            // Previous segment is below (Vector2(0,1)), use tail_up
-            currentTailGraphic = snakeGraphics.tail_up;
-        } else if (tailDirection.x === 0 && tailDirection.y === -1) {
-            // Previous segment is above (Vector2(0,-1)), use tail_down
+            // Previous segment is below, tail points down
             currentTailGraphic = snakeGraphics.tail_down;
+        } else if (tailDirection.x === 0 && tailDirection.y === -1) {
+            // Previous segment is above, tail points up
+            currentTailGraphic = snakeGraphics.tail_up;
         }
     }
 }
