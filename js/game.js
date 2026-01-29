@@ -88,7 +88,7 @@ function initGame() {
     scoreElement.textContent = score;
     gameRunning = true;
     gameOverOverlay.classList.remove('visible');
-    gameSpeed = 150; // Reset speed
+    gameSpeed = 150; // Reset speed to initial (slower) value
     
     placeApple();
     updateHeadGraphics();
@@ -159,14 +159,20 @@ function updateTailGraphics() {
             y: snake[snake.length - 2].y - snake[snake.length - 1].y
         };
         
+        // The tail graphics need to be reversed - if the segment before tail is to the right,
+        // the tail should point left (opposite direction)
         if (tailDirection.x === -1 && tailDirection.y === 0) {
-            currentTailGraphic = snakeGraphics.tail_left;
-        } else if (tailDirection.x === 1 && tailDirection.y === 0) {
+            // Segment before tail is to the left, so tail should point right
             currentTailGraphic = snakeGraphics.tail_right;
+        } else if (tailDirection.x === 1 && tailDirection.y === 0) {
+            // Segment before tail is to the right, so tail should point left
+            currentTailGraphic = snakeGraphics.tail_left;
         } else if (tailDirection.x === 0 && tailDirection.y === -1) {
-            currentTailGraphic = snakeGraphics.tail_up;
-        } else if (tailDirection.x === 0 && tailDirection.y === 1) {
+            // Segment before tail is above, so tail should point down
             currentTailGraphic = snakeGraphics.tail_down;
+        } else if (tailDirection.x === 0 && tailDirection.y === 1) {
+            // Segment before tail is below, so tail should point up
+            currentTailGraphic = snakeGraphics.tail_up;
         }
     }
 }
@@ -316,9 +322,9 @@ function checkAppleCollision() {
         crunchSound.currentTime = 0;
         crunchSound.play();
         
-        // Increase speed slightly as score increases
-        if (gameSpeed > 50) {
-            gameSpeed = Math.max(50, 150 - score * 2);
+        // Increase speed slightly as score increases (more gradual)
+        if (gameSpeed > 80) {
+            gameSpeed = Math.max(80, 150 - score * 0.5);
         }
         
         return true;
