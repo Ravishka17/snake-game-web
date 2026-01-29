@@ -64,6 +64,53 @@ function loadGraphics() {
     appleGraphic.src = 'assets/graphics/apple.png';
 }
 
+// Create flipped versions of tail graphics (180 degree rotation)
+function createFlippedTailGraphics() {
+    const flippedTails = {
+        tail_up_flipped: document.createElement('canvas'),
+        tail_down_flipped: document.createElement('canvas'),
+        tail_right_flipped: document.createElement('canvas'),
+        tail_left_flipped: document.createElement('canvas')
+    };
+    
+    const size = CELL_SIZE;
+    
+    // Create flipped versions
+    for (const [key, canvas] of Object.entries(flippedTails)) {
+        canvas.width = size;
+        canvas.height = size;
+    }
+    
+    // Flip tail_up (now points down)
+    const ctxUp = flippedTails.tail_up_flipped.getContext('2d');
+    ctxUp.translate(size, size);
+    ctxUp.rotate(Math.PI);
+    ctxUp.drawImage(snakeGraphics.tail_up, 0, 0, size, size);
+    
+    // Flip tail_down (now points up)
+    const ctxDown = flippedTails.tail_down_flipped.getContext('2d');
+    ctxDown.translate(size, size);
+    ctxDown.rotate(Math.PI);
+    ctxDown.drawImage(snakeGraphics.tail_down, 0, 0, size, size);
+    
+    // Flip tail_right (now points left)
+    const ctxRight = flippedTails.tail_right_flipped.getContext('2d');
+    ctxRight.translate(size, size);
+    ctxRight.rotate(Math.PI);
+    ctxRight.drawImage(snakeGraphics.tail_right, 0, 0, size, size);
+    
+    // Flip tail_left (now points right)
+    const ctxLeft = flippedTails.tail_left_flipped.getContext('2d');
+    ctxLeft.translate(size, size);
+    ctxLeft.rotate(Math.PI);
+    ctxLeft.drawImage(snakeGraphics.tail_left, 0, 0, size, size);
+    
+    return flippedTails;
+}
+
+// Flipped tail graphics
+let flippedTailGraphics = null;
+
 // Game state
 let snake = [];
 let direction = { x: 0, y: 0 };
@@ -159,24 +206,20 @@ function updateTailGraphics() {
             y: snake[snake.length - 2].y - snake[snake.length - 1].y
         };
         
-        // Match the original Python logic exactly:
-        // tail_relation = self.body[-2] - self.body[-1]
-        // If tail_relation == Vector2(1,0): self.tail = self.tail_left
-        // If tail_relation == Vector2(-1,0): self.tail = self.tail_right
-        // If tail_relation == Vector2(0,1): self.tail = self.tail_up
-        // If tail_relation == Vector2(0,-1): self.tail = self.tail_down
+        // Use flipped tail graphics (180 degree rotation)
+        // This makes the tails face the opposite direction as requested
         if (tailDirection.x === 1 && tailDirection.y === 0) {
-            // Previous segment is to the right (Vector2(1,0)), use tail_left
-            currentTailGraphic = snakeGraphics.tail_left;
+            // Previous segment is to the right, use flipped tail_right (now points left)
+            currentTailGraphic = flippedTailGraphics.tail_right_flipped;
         } else if (tailDirection.x === -1 && tailDirection.y === 0) {
-            // Previous segment is to the left (Vector2(-1,0)), use tail_right
-            currentTailGraphic = snakeGraphics.tail_right;
+            // Previous segment is to the left, use flipped tail_left (now points right)
+            currentTailGraphic = flippedTailGraphics.tail_left_flipped;
         } else if (tailDirection.x === 0 && tailDirection.y === 1) {
-            // Previous segment is below (Vector2(0,1)), use tail_up
-            currentTailGraphic = snakeGraphics.tail_up;
+            // Previous segment is below, use flipped tail_down (now points up)
+            currentTailGraphic = flippedTailGraphics.tail_down_flipped;
         } else if (tailDirection.x === 0 && tailDirection.y === -1) {
-            // Previous segment is above (Vector2(0,-1)), use tail_down
-            currentTailGraphic = snakeGraphics.tail_down;
+            // Previous segment is above, use flipped tail_up (now points down)
+            currentTailGraphic = flippedTailGraphics.tail_up_flipped;
         }
     }
 }
@@ -489,3 +532,8 @@ if (isMobileDevice()) {
     mobileInstructions.classList.add('hidden');
     initGame();
 }
+
+// Create flipped tail graphics after all images are loaded
+setTimeout(() => {
+    flippedTailGraphics = createFlippedTailGraphics();
+}, 1000);
