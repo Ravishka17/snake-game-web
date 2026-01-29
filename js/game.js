@@ -8,6 +8,8 @@ const finalScoreElement = document.getElementById('finalScore');
 const gameOverOverlay = document.getElementById('gameOverOverlay');
 const restartButton = document.getElementById('restartButton');
 const crunchSound = document.getElementById('crunchSound');
+const mobileInstructions = document.getElementById('mobileInstructions');
+const startGameButton = document.getElementById('startGameButton');
 
 // Game constants
 const CELL_SIZE = 40;
@@ -81,11 +83,12 @@ function initGame() {
         { x: 4, y: 10 },
         { x: 3, y: 10 }
     ];
-    direction = { x: 0, y: 0 };
+    direction = { x: 1, y: 0 }; // Start moving right by default
     score = 0;
     scoreElement.textContent = score;
     gameRunning = true;
     gameOverOverlay.classList.remove('visible');
+    gameSpeed = 150; // Reset speed
     
     placeApple();
     updateHeadGraphics();
@@ -392,8 +395,87 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-restartButton.addEventListener('click', initGame);
+// Mobile touch controls
+let touchStartX = 0;
+let touchStartY = 0;
+
+canvas.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+}, false);
+
+canvas.addEventListener('touchend', (e) => {
+    if (!gameRunning) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const diffX = touchStartX - touchEndX;
+    const diffY = touchStartY - touchEndY;
+    
+    // Detect swipe direction
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        // Horizontal swipe
+        if (diffX > 0) {
+            // Swipe left
+            if (direction.x !== 1) {
+                direction = { x: -1, y: 0 };
+            }
+        } else {
+            // Swipe right
+            if (direction.x !== -1) {
+                direction = { x: 1, y: 0 };
+            }
+        }
+    } else {
+        // Vertical swipe
+        if (diffY > 0) {
+            // Swipe up
+            if (direction.y !== 1) {
+                direction = { x: 0, y: -1 };
+            }
+        } else {
+            // Swipe down
+            if (direction.y !== -1) {
+                direction = { x: 0, y: 1 };
+            }
+        }
+    }
+}, false);
+
+// Fix restart button
+restartButton.addEventListener('click', () => {
+    initGame();
+});
+
+// Also add click event for mobile
+restartButton.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    initGame();
+});
 
 // Load graphics and start the game
 loadGraphics();
-initGame();
+
+// Check if mobile device
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Initialize game with mobile instructions
+if (isMobileDevice()) {
+    mobileInstructions.classList.remove('hidden');
+    startGameButton.addEventListener('click', () => {
+        mobileInstructions.classList.add('hidden');
+        initGame();
+    });
+    startGameButton.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        mobileInstructions.classList.add('hidden');
+        initGame();
+    });
+} else {
+    // Desktop - start game immediately
+    mobileInstructions.classList.add('hidden');
+    initGame();
+}
