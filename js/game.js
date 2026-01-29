@@ -152,6 +152,7 @@ function updateHeadGraphics() {
 }
 
 // Update tail graphics based on direction
+// FIXED: Reversed the tail graphic assignments since the images are facing the opposite direction
 function updateTailGraphics() {
     if (snake.length >= 2) {
         const tailDirection = {
@@ -159,19 +160,22 @@ function updateTailGraphics() {
             y: snake[snake.length - 2].y - snake[snake.length - 1].y
         };
         
-        // Reversed logic to fix upside-down tail images
-        // The tail should point in the direction it's coming FROM (opposite of the connection)
+        // Reversed logic to fix tail orientation:
+        // If previous segment is to the right, use tail_right (was tail_left)
+        // If previous segment is to the left, use tail_left (was tail_right)
+        // If previous segment is below, use tail_down (was tail_up)
+        // If previous segment is above, use tail_up (was tail_down)
         if (tailDirection.x === 1 && tailDirection.y === 0) {
-            // Previous segment is to the right, tail points right
+            // Previous segment is to the right, use tail_right
             currentTailGraphic = snakeGraphics.tail_right;
         } else if (tailDirection.x === -1 && tailDirection.y === 0) {
-            // Previous segment is to the left, tail points left
+            // Previous segment is to the left, use tail_left
             currentTailGraphic = snakeGraphics.tail_left;
         } else if (tailDirection.x === 0 && tailDirection.y === 1) {
-            // Previous segment is below, tail points down
+            // Previous segment is below, use tail_down
             currentTailGraphic = snakeGraphics.tail_down;
         } else if (tailDirection.x === 0 && tailDirection.y === -1) {
-            // Previous segment is above, tail points up
+            // Previous segment is above, use tail_up
             currentTailGraphic = snakeGraphics.tail_up;
         }
     }
