@@ -1,5 +1,5 @@
-// Snake Game - JavaScript Implementation
-// Based on the Python Pygame version
+// Snake Game - Enhanced Version with Original Assets
+// Based on the Python Pygame version with all original graphics
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -7,14 +7,60 @@ const scoreElement = document.getElementById('score');
 const finalScoreElement = document.getElementById('finalScore');
 const gameOverOverlay = document.getElementById('gameOverOverlay');
 const restartButton = document.getElementById('restartButton');
+const crunchSound = document.getElementById('crunchSound');
 
 // Game constants
 const CELL_SIZE = 40;
 const CELL_NUMBER = 20;
 const GRID_COLOR = '#afd748';
 const GRASS_COLOR = '#a7d13d';
-const SNAKE_COLOR = '#425a1a';
-const APPLE_COLOR = '#f00';
+
+// Load all snake graphics
+const snakeGraphics = {
+    head_up: new Image(),
+    head_down: new Image(),
+    head_right: new Image(),
+    head_left: new Image(),
+    
+    tail_up: new Image(),
+    tail_down: new Image(),
+    tail_right: new Image(),
+    tail_left: new Image(),
+    
+    body_vertical: new Image(),
+    body_horizontal: new Image(),
+    
+    body_tr: new Image(),
+    body_tl: new Image(),
+    body_br: new Image(),
+    body_bl: new Image()
+};
+
+// Load apple graphic
+const appleGraphic = new Image();
+
+// Load all graphics
+function loadGraphics() {
+    snakeGraphics.head_up.src = 'assets/graphics/head_up.png';
+    snakeGraphics.head_down.src = 'assets/graphics/head_down.png';
+    snakeGraphics.head_right.src = 'assets/graphics/head_right.png';
+    snakeGraphics.head_left.src = 'assets/graphics/head_left.png';
+    
+    snakeGraphics.tail_up.src = 'assets/graphics/tail_up.png';
+    snakeGraphics.tail_down.src = 'assets/graphics/tail_down.png';
+    snakeGraphics.tail_right.src = 'assets/graphics/tail_right.png';
+    snakeGraphics.tail_left.src = 'assets/graphics/tail_left.png';
+    
+    snakeGraphics.body_vertical.src = 'assets/graphics/body_vertical.png';
+    snakeGraphics.body_horizontal.src = 'assets/graphics/body_horizontal.png';
+    
+    snakeGraphics.body_tr.src = 'assets/graphics/body_tr.png';
+    snakeGraphics.body_tl.src = 'assets/graphics/body_tl.png';
+    snakeGraphics.body_br.src = 'assets/graphics/body_br.png';
+    snakeGraphics.body_bl.src = 'assets/graphics/body_bl.png';
+    
+    appleGraphic.src = 'assets/graphics/apple.png';
+}
 
 // Game state
 let snake = [];
@@ -25,6 +71,8 @@ let gameRunning = true;
 let gameSpeed = 150; // ms
 let lastUpdateTime = 0;
 let newBlock = false;
+let currentHeadGraphic = null;
+let currentTailGraphic = null;
 
 // Initialize game
 function initGame() {
@@ -40,6 +88,8 @@ function initGame() {
     gameOverOverlay.classList.remove('visible');
     
     placeApple();
+    updateHeadGraphics();
+    updateTailGraphics();
     
     // Start game loop
     requestAnimationFrame(gameLoop);
@@ -85,25 +135,113 @@ function drawGrass() {
     }
 }
 
-// Draw snake
+// Update head graphics based on direction
+function updateHeadGraphics() {
+    if (direction.x === -1 && direction.y === 0) {
+        currentHeadGraphic = snakeGraphics.head_left;
+    } else if (direction.x === 1 && direction.y === 0) {
+        currentHeadGraphic = snakeGraphics.head_right;
+    } else if (direction.x === 0 && direction.y === -1) {
+        currentHeadGraphic = snakeGraphics.head_up;
+    } else if (direction.x === 0 && direction.y === 1) {
+        currentHeadGraphic = snakeGraphics.head_down;
+    }
+}
+
+// Update tail graphics based on direction
+function updateTailGraphics() {
+    if (snake.length >= 2) {
+        const tailDirection = {
+            x: snake[snake.length - 2].x - snake[snake.length - 1].x,
+            y: snake[snake.length - 2].y - snake[snake.length - 1].y
+        };
+        
+        if (tailDirection.x === -1 && tailDirection.y === 0) {
+            currentTailGraphic = snakeGraphics.tail_left;
+        } else if (tailDirection.x === 1 && tailDirection.y === 0) {
+            currentTailGraphic = snakeGraphics.tail_right;
+        } else if (tailDirection.x === 0 && tailDirection.y === -1) {
+            currentTailGraphic = snakeGraphics.tail_up;
+        } else if (tailDirection.x === 0 && tailDirection.y === 1) {
+            currentTailGraphic = snakeGraphics.tail_down;
+        }
+    }
+}
+
+// Draw snake with proper graphics
 function drawSnake() {
     // Draw head
     const head = snake[0];
-    ctx.fillStyle = SNAKE_COLOR;
-    ctx.fillRect(
-        head.x * CELL_SIZE,
-        head.y * CELL_SIZE,
-        CELL_SIZE,
-        CELL_SIZE
-    );
+    if (currentHeadGraphic && currentHeadGraphic.complete) {
+        ctx.drawImage(
+            currentHeadGraphic,
+            head.x * CELL_SIZE,
+            head.y * CELL_SIZE,
+            CELL_SIZE,
+            CELL_SIZE
+        );
+    }
     
     // Draw body segments
-    for (let i = 1; i < snake.length; i++) {
+    for (let i = 1; i < snake.length - 1; i++) {
         const segment = snake[i];
-        ctx.fillStyle = SNAKE_COLOR;
-        ctx.fillRect(
-            segment.x * CELL_SIZE,
-            segment.y * CELL_SIZE,
+        const previousSegment = snake[i + 1];
+        const nextSegment = snake[i - 1];
+        
+        const previousDirection = {
+            x: previousSegment.x - segment.x,
+            y: previousSegment.y - segment.y
+        };
+        
+        const nextDirection = {
+            x: nextSegment.x - segment.x,
+            y: nextSegment.y - segment.y
+        };
+        
+        // Determine which body graphic to use
+        let bodyGraphic = null;
+        
+        if (previousDirection.x === nextDirection.x) {
+            // Vertical body
+            bodyGraphic = snakeGraphics.body_vertical;
+        } else if (previousDirection.y === nextDirection.y) {
+            // Horizontal body
+            bodyGraphic = snakeGraphics.body_horizontal;
+        } else {
+            // Corner pieces
+            if ((previousDirection.x === -1 && nextDirection.y === -1) || 
+                (previousDirection.y === -1 && nextDirection.x === -1)) {
+                bodyGraphic = snakeGraphics.body_tl;
+            } else if ((previousDirection.x === -1 && nextDirection.y === 1) || 
+                       (previousDirection.y === 1 && nextDirection.x === -1)) {
+                bodyGraphic = snakeGraphics.body_bl;
+            } else if ((previousDirection.x === 1 && nextDirection.y === -1) || 
+                       (previousDirection.y === -1 && nextDirection.x === 1)) {
+                bodyGraphic = snakeGraphics.body_tr;
+            } else if ((previousDirection.x === 1 && nextDirection.y === 1) || 
+                       (previousDirection.y === 1 && nextDirection.x === 1)) {
+                bodyGraphic = snakeGraphics.body_br;
+            }
+        }
+        
+        if (bodyGraphic && bodyGraphic.complete) {
+            ctx.drawImage(
+                bodyGraphic,
+                segment.x * CELL_SIZE,
+                segment.y * CELL_SIZE,
+                CELL_SIZE,
+                CELL_SIZE
+            );
+        }
+    }
+    
+    // Draw tail
+    if (snake.length > 1 && currentTailGraphic && currentTailGraphic.complete) {
+        const tail = snake[snake.length - 1];
+        ctx.drawImage(
+            currentTailGraphic,
+            tail.x * CELL_SIZE,
+            tail.y * CELL_SIZE,
             CELL_SIZE,
             CELL_SIZE
         );
@@ -112,20 +250,15 @@ function drawSnake() {
 
 // Draw apple
 function drawApple() {
-    ctx.fillStyle = APPLE_COLOR;
-    ctx.beginPath();
-    const centerX = apple.x * CELL_SIZE + CELL_SIZE / 2;
-    const centerY = apple.y * CELL_SIZE + CELL_SIZE / 2;
-    const radius = CELL_SIZE / 2 - 2;
-    
-    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Add some shine effect
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-    ctx.beginPath();
-    ctx.arc(centerX - radius/3, centerY - radius/3, radius/3, 0, Math.PI * 2);
-    ctx.fill();
+    if (appleGraphic.complete) {
+        ctx.drawImage(
+            appleGraphic,
+            apple.x * CELL_SIZE,
+            apple.y * CELL_SIZE,
+            CELL_SIZE,
+            CELL_SIZE
+        );
+    }
 }
 
 // Move snake
@@ -176,6 +309,10 @@ function checkAppleCollision() {
         newBlock = true;
         placeApple();
         
+        // Play crunch sound
+        crunchSound.currentTime = 0;
+        crunchSound.play();
+        
         // Increase speed slightly as score increases
         if (gameSpeed > 50) {
             gameSpeed = Math.max(50, 150 - score * 2);
@@ -208,6 +345,8 @@ function gameLoop(timestamp) {
         
         // Update game state
         moveSnake();
+        updateHeadGraphics();
+        updateTailGraphics();
         
         if (checkCollisions()) {
             gameOver();
@@ -255,5 +394,6 @@ window.addEventListener('keydown', (e) => {
 
 restartButton.addEventListener('click', initGame);
 
-// Start the game
+// Load graphics and start the game
+loadGraphics();
 initGame();

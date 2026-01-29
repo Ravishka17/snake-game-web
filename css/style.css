@@ -26,7 +26,7 @@ body {
     background-color: #afd748;
     border: 2px solid #425a1a;
     border-radius: 5px;
-    padding: 10px 15px;
+    padding: 8px 12px;
     font-size: 24px;
     font-weight: bold;
     color: #384a0c;
@@ -34,9 +34,10 @@ body {
     align-items: center;
 }
 
-.score-display::before {
-    content: "🍎";
-    margin-right: 10px;
+.score-apple {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
 }
 
 .game-over-overlay {

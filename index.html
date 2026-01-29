@@ -3,13 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
+    <title>Snake Game - Classic Edition</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        @font-face {
+            font-family: 'PoetsenOne';
+            src: url('assets/fonts/PoetsenOne-Regular.ttf') format('truetype');
+        }
+        
+        body {
+            font-family: 'PoetsenOne', Arial, sans-serif;
+        }
+    </style>
 </head>
 <body>
     <div class="game-container">
         <canvas id="gameCanvas" width="800" height="800"></canvas>
         <div class="score-display">
+            <img src="assets/graphics/apple.png" alt="Apple" class="score-apple">
             <span id="score">0</span>
         </div>
         <div class="game-over-overlay" id="gameOverOverlay">
@@ -20,6 +31,7 @@
             </div>
         </div>
     </div>
+    <audio id="crunchSound" src="assets/sounds/crunch.wav" preload="auto"></audio>
     <script src="js/game.js"></script>
 </body>
 </html>
