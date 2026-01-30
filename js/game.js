@@ -152,7 +152,7 @@ function updateHeadGraphics() {
 }
 
 // Update tail graphics based on direction
-// FIXED: Reversed the tail graphic assignments since the images are facing the opposite direction
+// The tail graphic should point in the OPPOSITE direction of where the body is coming from
 function updateTailGraphics() {
     if (snake.length >= 2) {
         const tailDirection = {
@@ -160,23 +160,23 @@ function updateTailGraphics() {
             y: snake[snake.length - 2].y - snake[snake.length - 1].y
         };
         
-        // Reversed logic to fix tail orientation:
-        // If previous segment is to the right, use tail_right (was tail_left)
-        // If previous segment is to the left, use tail_left (was tail_right)
-        // If previous segment is below, use tail_down (was tail_up)
-        // If previous segment is above, use tail_up (was tail_down)
+        // The tail should point OPPOSITE to where the previous segment is:
+        // If body is coming from the right (tailDirection.x = 1), tail points left
+        // If body is coming from the left (tailDirection.x = -1), tail points right
+        // If body is coming from below (tailDirection.y = 1), tail points up
+        // If body is coming from above (tailDirection.y = -1), tail points down
         if (tailDirection.x === 1 && tailDirection.y === 0) {
-            // Previous segment is to the right, use tail_right
-            currentTailGraphic = snakeGraphics.tail_right;
-        } else if (tailDirection.x === -1 && tailDirection.y === 0) {
-            // Previous segment is to the left, use tail_left
+            // Body coming from right, tail points left
             currentTailGraphic = snakeGraphics.tail_left;
+        } else if (tailDirection.x === -1 && tailDirection.y === 0) {
+            // Body coming from left, tail points right
+            currentTailGraphic = snakeGraphics.tail_right;
         } else if (tailDirection.x === 0 && tailDirection.y === 1) {
-            // Previous segment is below, use tail_down
-            currentTailGraphic = snakeGraphics.tail_down;
-        } else if (tailDirection.x === 0 && tailDirection.y === -1) {
-            // Previous segment is above, use tail_up
+            // Body coming from below, tail points up
             currentTailGraphic = snakeGraphics.tail_up;
+        } else if (tailDirection.x === 0 && tailDirection.y === -1) {
+            // Body coming from above, tail points down
+            currentTailGraphic = snakeGraphics.tail_down;
         }
     }
 }
