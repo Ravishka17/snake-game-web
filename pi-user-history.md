@@ -15,8 +15,8 @@
 ##### user_data.details.identifiers
 | # | identifier| type|
 | --- | --- | --- |
-| 1 | 108786096858222347412 | GOOGLE_OAUTH_ID |
-| 2 | madushanravishka71@gmail.com | EMAIL |
+| 1 | XXXXXXXXXXXXXXXXXXXXXX | GOOGLE_OAUTH_ID |
+| 2 | xxxxxxxx@gmail.com | EMAIL |
 
 #### user_data.messages
 | # | channel| sender| sent_at| text|
@@ -1277,6 +1277,6 @@
 | 852 | ANDROID | HUMAN | 2025-08-03T09:14:31.559 | Like what? |
 | 853 | ANDROID | AI | 2025-08-03T09:14:31.579 | Well, it can be tricky to predict exactly which companies might offer free trials or services in the STT space, since it's a rapidly changing industry. 🤖 But here are a few ideas to get you started:<br><br> * Look into smaller, niche providers that specialize in STT. They might be more likely to offer free trials or lower-cost plans.<br><br> * Stay on top of news in the AI and language processing fields. New companies are entering the market all the time, and they might be more willing to offer free trials to attract attention. |
 | 854 | ANDROID | HUMAN | 2025-08-04T11:21:18.917 | ඔබට සහය වීමට ලැබීම සතුටක්. (obaṭa sahaya vīmaṭa læbīma satuṭak.) Means I'm happy to assist you. |
-| 855 | ANDROID | AI | 2025-08-04T11:21:18.945 | Thank you, Ravishka! 😊 You've taught me another valuable phrase in Sinhala. So, "ඔ� (obaṭa sahaya vīmaṭa læbīma satuṭak) means "I'm happy to assist you." 🤖 That's a great phrase to use when helping people, whether it's with your website or in other contexts. 😊 |
+| 855 | ANDROID | AI | 2025-08-04T11:21:18.945 | Thank you, Ravishka! 😊 You've taught me another valuable phrase in Sinhala. So, "ඔබට සහය වීමට ලැබීම සතුටක්" (obaṭa sahaya vīmaṭa læbīma satuṭak) means "I'm happy to assist you." 🤖 That's a great phrase to use when helping people, whether it's with your website or in other contexts. 😊 |
 | 856 | ANDROID | HUMAN | 2025-08-04T11:22:00.012 | So How do you say I'm happy to assist you? |
 | 857 | ANDROID | AI | 2025-08-04T11:22:00.033 | In Sinhala, I can say "ඔ� (obaṭa sahaya vīmaṭa læbīma satuṭak)" to convey the meaning of "I'm happy to assist you." 🤖 This phrase expresses my willingness to help and offer assistance. 🤗 |
