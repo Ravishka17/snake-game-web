@@ -64,6 +64,53 @@ function loadGraphics() {
     appleGraphic.src = 'assets/graphics/apple.png';
 }
 
+// Create flipped versions of tail graphics (180 degree rotation)
+function createFlippedTailGraphics() {
+    const flippedTails = {
+        tail_up_flipped: document.createElement('canvas'),
+        tail_down_flipped: document.createElement('canvas'),
+        tail_right_flipped: document.createElement('canvas'),
+        tail_left_flipped: document.createElement('canvas')
+    };
+    
+    const size = CELL_SIZE;
+    
+    // Create flipped versions
+    for (const [key, canvas] of Object.entries(flippedTails)) {
+        canvas.width = size;
+        canvas.height = size;
+    }
+    
+    // Flip tail_up (now points down)
+    const ctxUp = flippedTails.tail_up_flipped.getContext('2d');
+    ctxUp.translate(size, size);
+    ctxUp.rotate(Math.PI);
+    ctxUp.drawImage(snakeGraphics.tail_up, 0, 0, size, size);
+    
+    // Flip tail_down (now points up)
+    const ctxDown = flippedTails.tail_down_flipped.getContext('2d');
+    ctxDown.translate(size, size);
+    ctxDown.rotate(Math.PI);
+    ctxDown.drawImage(snakeGraphics.tail_down, 0, 0, size, size);
+    
+    // Flip tail_right (now points left)
+    const ctxRight = flippedTails.tail_right_flipped.getContext('2d');
+    ctxRight.translate(size, size);
+    ctxRight.rotate(Math.PI);
+    ctxRight.drawImage(snakeGraphics.tail_right, 0, 0, size, size);
+    
+    // Flip tail_left (now points right)
+    const ctxLeft = flippedTails.tail_left_flipped.getContext('2d');
+    ctxLeft.translate(size, size);
+    ctxLeft.rotate(Math.PI);
+    ctxLeft.drawImage(snakeGraphics.tail_left, 0, 0, size, size);
+    
+    return flippedTails;
+}
+
+// Flipped tail graphics
+let flippedTailGraphics = null;
+
 // Game state
 let snake = [];
 let direction = { x: 0, y: 0 };
