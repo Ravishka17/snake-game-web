@@ -199,6 +199,7 @@ function updateHeadGraphics() {
 }
 
 // Update tail graphics based on direction
+// The tail graphic should point in the OPPOSITE direction of where the body is coming from
 function updateTailGraphics() {
     if (snake.length >= 2) {
         const tailDirection = {
@@ -206,20 +207,23 @@ function updateTailGraphics() {
             y: snake[snake.length - 2].y - snake[snake.length - 1].y
         };
         
-        // Use flipped tail graphics (180 degree rotation)
-        // This makes the tails face the opposite direction as requested
+        // The tail should point OPPOSITE to where the previous segment is:
+        // If body is coming from the right (tailDirection.x = 1), tail points left
+        // If body is coming from the left (tailDirection.x = -1), tail points right
+        // If body is coming from below (tailDirection.y = 1), tail points up
+        // If body is coming from above (tailDirection.y = -1), tail points down
         if (tailDirection.x === 1 && tailDirection.y === 0) {
-            // Previous segment is to the right, use flipped tail_right (now points left)
-            currentTailGraphic = flippedTailGraphics.tail_right_flipped;
+            // Body coming from right, tail points left
+            currentTailGraphic = snakeGraphics.tail_left;
         } else if (tailDirection.x === -1 && tailDirection.y === 0) {
-            // Previous segment is to the left, use flipped tail_left (now points right)
-            currentTailGraphic = flippedTailGraphics.tail_left_flipped;
+            // Body coming from left, tail points right
+            currentTailGraphic = snakeGraphics.tail_right;
         } else if (tailDirection.x === 0 && tailDirection.y === 1) {
-            // Previous segment is below, use flipped tail_down (now points up)
-            currentTailGraphic = flippedTailGraphics.tail_down_flipped;
+            // Body coming from below, tail points up
+            currentTailGraphic = snakeGraphics.tail_up;
         } else if (tailDirection.x === 0 && tailDirection.y === -1) {
-            // Previous segment is above, use flipped tail_up (now points down)
-            currentTailGraphic = flippedTailGraphics.tail_up_flipped;
+            // Body coming from above, tail points down
+            currentTailGraphic = snakeGraphics.tail_down;
         }
     }
 }
@@ -532,8 +536,3 @@ if (isMobileDevice()) {
     mobileInstructions.classList.add('hidden');
     initGame();
 }
-
-// Create flipped tail graphics after all images are loaded
-setTimeout(() => {
-    flippedTailGraphics = createFlippedTailGraphics();
-}, 1000);
